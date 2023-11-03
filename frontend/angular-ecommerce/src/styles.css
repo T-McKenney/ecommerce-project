@@ -724,6 +724,15 @@ table.table.table-bordered th{
 .detail-section{
   margin-top:60px
 }
+
+.detail-img {
+  width: 30%;
+}
+
+.product-info a:link {
+  text-decoration: none;
+  color: #232324;
+}
 /**/
 
 /*
@@ -745,7 +754,9 @@ a.primary-btn{
   color:#fff;
   border-radius:2px;
   font-size:14px;
-  margin-top:5px
+  margin-top:5px;
+  margin-bottom: 10px;
+  text-decoration: none;
 }
 a.primary-btn:hover{
   background:#0da8e4;
