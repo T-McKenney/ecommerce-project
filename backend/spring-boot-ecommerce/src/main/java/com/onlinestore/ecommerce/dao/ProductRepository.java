@@ -16,4 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Add query method - performs SQL query: SELECT * FROM product WHERE category_id=?
     Page<Product> findByCategoryId(@Param("id") Long id, Pageable pageable);
+
+    // Query method - performs SQL: SELECT * FROM Product p WHERE p.name LIKE CONCAT('%', :name, '%')
+    // Used to find any p.name containing the search keywords input on the webpage
+    Page<Product> findByNameContaining(@Param("name") String name, Pageable page);
 }
