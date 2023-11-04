@@ -4,6 +4,7 @@ package com.onlinestore.ecommerce.entity;
     Created by tylermckenney on 11/4/23.
 */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,5 +29,6 @@ public class Country {
     private String name;
 
     @OneToMany(mappedBy = "country")
+    @JsonIgnore
     private List<State> states;
 }
