@@ -1,170 +1,194 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FireSaleShopFormService} from "../../services/fire-sale-shop-form.service";
 import {Country} from "../../common/country";
 import {State} from "../../common/state";
+import {FireSaleShopValidators} from "../../validators/fire-sale-shop-validators";
 
 @Component({
-  selector: 'app-checkout',
-  templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+    selector: 'app-checkout',
+    templateUrl: './checkout.component.html',
+    styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
 
 
-  checkoutFormGroup!: FormGroup;
+    checkoutFormGroup!: FormGroup;
 
-  totalPrice: number = 0;
-  totalQuantity: number = 0;
+    totalPrice: number = 0;
+    totalQuantity: number = 0;
 
-  creditCardMonths: number[] = [];
-  creditCardYears: number[] = [];
+    creditCardMonths: number[] = [];
+    creditCardYears: number[] = [];
 
-  countries: Country[] = [];
+    countries: Country[] = [];
 
-  shippingAddressStates: State[]=[];
-  billingAddressStates: State[]=[];
+    shippingAddressStates: State[] = [];
+    billingAddressStates: State[] = [];
 
-  constructor(private formBuilder: FormBuilder,
-              private fireSaleShopFormService: FireSaleShopFormService) {
-  }
-
-  ngOnInit(): void {
-
-    this.checkoutFormGroup = this.formBuilder.group({
-      customer: this.formBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['']
-      }),
-      shippingAddress: this.formBuilder.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: ['']
-      }),
-      billingAddress: this.formBuilder.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: ['']
-      }),
-      creditCard: this.formBuilder.group({
-        cardType: [''],
-        nameOnCard: [''],
-        cardNumber: [''],
-        securityCode: [''],
-        expirationMonth: [''],
-        expirationYear: ['']
-      })
-    });
-
-    // populate credit card months
-    const startMonth: number = new Date().getMonth() + 1;
-    console.log("startMonth: " + startMonth);
-
-    this.fireSaleShopFormService.getCreditCardMonths(startMonth).subscribe(
-      data => {
-        console.log("Retrieved credit card months: " + JSON.stringify(data));
-        this.creditCardMonths = data;
-      }
-    )
-
-    // populate credit card years
-    this.fireSaleShopFormService.getCreditCardYears().subscribe(
-      data => {
-        console.log("Retrieved credit card years: " + JSON.stringify(data));
-        this.creditCardYears = data;
-      }
-    )
-
-    // populate countries
-    this.fireSaleShopFormService.getCountries().subscribe(
-      data => {
-        console.log("Retrieved countries: " + JSON.stringify(data));
-        this.countries = data;
-      }
-    )
-  }
-
-  onSubmit() {
-    console.log("Handling the submit button");
-    console.log(this.checkoutFormGroup.get('customer')?.value);
-
-    console.log("The shipping address country is: " + this.checkoutFormGroup.get('shippingAddress')?.value.country.name);
-    console.log("The shipping address state is: " + this.checkoutFormGroup.get('shippingAddress')?.value.state.name);
-  }
-
-  copyShippingAddressToBillingAddress({event}: { event: any }) {
-
-    if (event.target.checked) {
-      this.checkoutFormGroup.controls['billingAddress']
-        .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
-
-      // bug fix for states
-        this.billingAddressStates = this.shippingAddressStates;
-    } else {
-      this.checkoutFormGroup.controls['billingAddress'].reset();
-
-      // bug fix for states
-        this.billingAddressStates = [];
+    constructor(private formBuilder: FormBuilder,
+                private fireSaleShopFormService: FireSaleShopFormService) {
     }
-  }
 
-  getStates(formGroupName: string) {
+    ngOnInit(): void {
 
-    const formGroup = this.checkoutFormGroup.get(formGroupName);
+        this.checkoutFormGroup = this.formBuilder.group({
+            customer: this.formBuilder.group({
+                firstName: new FormControl('',
+                    [Validators.required,
+                                Validators.minLength(2),
+                                FireSaleShopValidators.notOnlyWhitespace]),
+                lastName: new FormControl('',
+                    [Validators.required,
+                                Validators.minLength(2),
+                                FireSaleShopValidators.notOnlyWhitespace]),
+                email: new FormControl('',
+                    [Validators.required,
+                                Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])
+            }),
+            shippingAddress: this.formBuilder.group({
+                street: [''],
+                city: [''],
+                state: [''],
+                country: [''],
+                zipCode: ['']
+            }),
+            billingAddress: this.formBuilder.group({
+                street: [''],
+                city: [''],
+                state: [''],
+                country: [''],
+                zipCode: ['']
+            }),
+            creditCard: this.formBuilder.group({
+                cardType: [''],
+                nameOnCard: [''],
+                cardNumber: [''],
+                securityCode: [''],
+                expirationMonth: [''],
+                expirationYear: ['']
+            })
+        });
 
-    const countryCode = formGroup?.value.country.code;
-    const countryName = formGroup?.value.country.name;
+        // populate credit card months
+        const startMonth: number = new Date().getMonth() + 1;
+        console.log("startMonth: " + startMonth);
 
-    console.log(`${formGroupName} country code: ${countryCode}`);
-    console.log(`${formGroupName} country name: ${countryName}`);
+        this.fireSaleShopFormService.getCreditCardMonths(startMonth).subscribe(
+            data => {
+                console.log("Retrieved credit card months: " + JSON.stringify(data));
+                this.creditCardMonths = data;
+            }
+        )
 
-    this.fireSaleShopFormService.getStates(countryCode).subscribe(
-      data => {
-        if (formGroupName === 'shippingAddress') {
+        // populate credit card years
+        this.fireSaleShopFormService.getCreditCardYears().subscribe(
+            data => {
+                console.log("Retrieved credit card years: " + JSON.stringify(data));
+                this.creditCardYears = data;
+            }
+        )
 
-          this.shippingAddressStates = data;
+        // populate countries
+        this.fireSaleShopFormService.getCountries().subscribe(
+            data => {
+                console.log("Retrieved countries: " + JSON.stringify(data));
+                this.countries = data;
+            }
+        )
+    }
 
-        } else {
+    get firstName() {
+        return this.checkoutFormGroup.get('customer.firstName');
+    }
 
-          this.billingAddressStates = data;
+    get lastName() {
+        return this.checkoutFormGroup.get('customer.lastName');
+    }
+    get email() {
+        return this.checkoutFormGroup.get('customer.email');
+    }
 
+    onSubmit() {
+        console.log("Handling the submit button");
+
+        if (this.checkoutFormGroup.invalid) {
+            this.checkoutFormGroup.markAllAsTouched();
         }
 
-        // select first item by default
-        // @ts-ignore
-        formGroup?.get('state').setValue(data[0]);
+        console.log(this.checkoutFormGroup.get('customer')?.value);
 
-      }
-    )
-  }
+        console.log("The shipping address country is: " + this.checkoutFormGroup.get('shippingAddress')?.value.country.name);
+        console.log("The shipping address state is: " + this.checkoutFormGroup.get('shippingAddress')?.value.state.name);
+    }
+    copyShippingAddressToBillingAddress({event}: { event: any }) {
 
-  handleMonthsAndYears() {
+        if (event.target.checked) {
+            this.checkoutFormGroup.controls['billingAddress']
+                .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
 
-    const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
+            // bug fix for states
+            this.billingAddressStates = this.shippingAddressStates;
+        } else {
+            this.checkoutFormGroup.controls['billingAddress'].reset();
 
-    const currentYear: number = new Date().getFullYear();
-    const selectedYear: number = Number(creditCardFormGroup?.value.expirationYear);
-
-    // if the current year equals the selected year, then start with the current month
-
-    let startMonth: number;
-
-    if (currentYear === selectedYear) {
-      startMonth = new Date().getMonth() + 1;
-    } else {
-      startMonth = 1;
+            // bug fix for states
+            this.billingAddressStates = [];
+        }
     }
 
-    this.fireSaleShopFormService.getCreditCardMonths(startMonth).subscribe(
-      data => {
-        console.log("Retrieved credit card months: " + JSON.stringify(data));
-        this.creditCardMonths = data;
-      }
-    );
-  }
+    getStates(formGroupName: string) {
+
+        const formGroup = this.checkoutFormGroup.get(formGroupName);
+
+        const countryCode = formGroup?.value.country.code;
+        const countryName = formGroup?.value.country.name;
+
+        console.log(`${formGroupName} country code: ${countryCode}`);
+        console.log(`${formGroupName} country name: ${countryName}`);
+
+        this.fireSaleShopFormService.getStates(countryCode).subscribe(
+            data => {
+                if (formGroupName === 'shippingAddress') {
+
+                    this.shippingAddressStates = data;
+
+                } else {
+
+                    this.billingAddressStates = data;
+
+                }
+
+                // select first item by default
+                // @ts-ignore
+                formGroup?.get('state').setValue(data[0]);
+
+            }
+        )
+    }
+
+    handleMonthsAndYears() {
+
+        const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
+
+        const currentYear: number = new Date().getFullYear();
+        const selectedYear: number = Number(creditCardFormGroup?.value.expirationYear);
+
+        // if the current year equals the selected year, then start with the current month
+
+        let startMonth: number;
+
+        if (currentYear === selectedYear) {
+            startMonth = new Date().getMonth() + 1;
+        } else {
+            startMonth = 1;
+        }
+
+        this.fireSaleShopFormService.getCreditCardMonths(startMonth).subscribe(
+            data => {
+                console.log("Retrieved credit card months: " + JSON.stringify(data));
+                this.creditCardMonths = data;
+            }
+        );
+    }
 }
