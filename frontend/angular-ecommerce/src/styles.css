@@ -144,7 +144,7 @@ aside.menu-sidebar.d-none.d-lg-block.clr{
   right:0;
   left:200px;
   height:75px;
-  z-index:3
+  z-index:100
 }
 
 .header-desktop .section-content{
@@ -622,12 +622,12 @@ input.au-input.au-input-xl{
   -webkit-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
-  user-select:none
+  user-select: none;
 }
 .au-checkbox input{
-  position:absolute;
-  opacity:0;
-  cursor:pointer
+  position:relative;
+  opacity:1;
+  cursor:pointer;
 }
 .au-checkmark{
   position:absolute;
