@@ -4,6 +4,7 @@ import {FireSaleShopFormService} from "../../services/fire-sale-shop-form.servic
 import {Country} from "../../common/country";
 import {State} from "../../common/state";
 import {FireSaleShopValidators} from "../../validators/fire-sale-shop-validators";
+import {CartService} from "../../services/cart.service";
 
 @Component({
     selector: 'app-checkout',
@@ -27,10 +28,13 @@ export class CheckoutComponent implements OnInit {
     billingAddressStates: State[] = [];
 
     constructor(private formBuilder: FormBuilder,
-                private fireSaleShopFormService: FireSaleShopFormService) {
+                private fireSaleShopFormService: FireSaleShopFormService,
+                private cartService: CartService) {
     }
 
     ngOnInit(): void {
+
+        this.reviewCartDetails();
 
         this.checkoutFormGroup = this.formBuilder.group({
             customer: this.formBuilder.group({
@@ -273,6 +277,20 @@ export class CheckoutComponent implements OnInit {
                 console.log("Retrieved credit card months: " + JSON.stringify(data));
                 this.creditCardMonths = data;
             }
+        );
+    }
+
+    private reviewCartDetails() {
+
+        // subscribe to cartservice total quantity
+        this.cartService.totalQuantity.subscribe(
+            totalQuantity => this.totalQuantity = totalQuantity
+        );
+
+
+        // subscribe to cartservice total price
+        this.cartService.totalPrice.subscribe(
+            totalPrice => this.totalPrice = totalPrice
         );
     }
 }
