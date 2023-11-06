@@ -33,4 +33,8 @@ public class Address {
 
     @Column(name = "zipCode")
     private String zipCode;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private Order order;
 }
