@@ -21,7 +21,7 @@ public class OrderItem {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "imgage_url")
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "unit_price")
