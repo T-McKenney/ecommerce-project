@@ -15,5 +15,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Add query method - performs SQL query: SELECT * FROM product WHERE category_id=?
-    Page<Order> findByCustomerEmail(@Param("email") String email, Pageable pageable);
+    Page<Order> findByCustomerEmailOrderByDateCreatedDesc(@Param("email") String email, Pageable pageable);
 }
