@@ -4,10 +4,7 @@ package com.onlinestore.ecommerce.config;
     Created by tylermckenney on 11/2/23.
 */
 
-import com.onlinestore.ecommerce.entity.Country;
-import com.onlinestore.ecommerce.entity.Product;
-import com.onlinestore.ecommerce.entity.ProductCategory;
-import com.onlinestore.ecommerce.entity.State;
+import com.onlinestore.ecommerce.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +42,12 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 HttpMethod.PATCH
         };
 
-        // Disable HTTP methods for Product: Put, POST, and DELETE
+        // Disable HTTP methods for the following Classes: Put, POST, PATCH and DELETE
         disableHttpMethods(Product.class, config, theUnsupportedActions);
-
-        // Disable HTTP methods for ProductCategory: Put, POST, and DELETE
         disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
-
-        // Disable HTTP methods for Country: Put, POST, and DELETE
         disableHttpMethods(Country.class, config, theUnsupportedActions);
-
-        // Disable HTTP methods for State: Put, POST, and DELETE
         disableHttpMethods(State.class, config, theUnsupportedActions);
+        disableHttpMethods(Order.class, config, theUnsupportedActions);
 
         // Call an internal helper method to expose the ids
         exposeIds(config);
