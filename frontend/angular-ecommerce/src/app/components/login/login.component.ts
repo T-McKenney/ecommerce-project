@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     this.oktaSignIn = new OktaSignIn({
       logo: 'assets/images/logo.png',
       baseUrl: myAppConfig.oidc.issuer.split('/oauth2')[0],
-      clientId: myAppConfig.oidc.clientID,
+      clientId: myAppConfig.oidc.clientId,
       redirectUri: myAppConfig.oidc.redirectUri,
       authParams: {
         pkce: true, // proof key for code exchange
