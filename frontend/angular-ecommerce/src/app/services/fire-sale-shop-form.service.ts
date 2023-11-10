@@ -3,14 +3,15 @@ import {map, Observable, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Country} from "../common/country";
 import {State} from "../common/state";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireSaleShopFormService {
 
-  private countriesUrl = 'http://localhost:8080/api/countries';
-  private statesUrl = 'http://localhost:8080/api/states';
+  private countriesUrl = environment.firesaleApiUrl + '/countries';
+  private statesUrl = environment.firesaleApiUrl + '/states';
 
   constructor(private httpClient: HttpClient) {
   }
